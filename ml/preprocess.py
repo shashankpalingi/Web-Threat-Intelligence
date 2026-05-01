@@ -5,10 +5,13 @@ from urllib.parse import urlparse
 import tldextract
 
 # -------- LOAD RAW DATASET --------
-data = pd.read_csv("../data/dataset.csv")
+data = pd.read_csv("../data/reduced_final_data.csv")
 
 # Ensure correct column names
 data.columns = data.columns.str.strip().str.lower()
+
+print(f"📊 Dataset loaded: {len(data)} rows")
+print(f"   Label distribution:\n{data['label'].value_counts().to_string()}")
 
 # -------- CONFIG --------
 
@@ -20,7 +23,7 @@ brands = [
 trusted_domains = [
     "google.com","amazon.com","facebook.com",
     "apple.com","microsoft.com","paypal.com",
-    "instagram.com"
+    "instagram.com","youtube.com","wikipedia.org"
 ]
 
 keywords = [
@@ -33,6 +36,7 @@ suspicious_tlds = ["xyz","top","ru","tk","cf","ml"]
 # -------- FEATURE FUNCTIONS --------
 
 def normalize(url):
+    url = str(url).strip()
     return url if url.startswith("http") else "http://" + url
 
 
@@ -51,6 +55,8 @@ def suspicious_tld(url):
 
 
 def entropy(url):
+    if len(url) == 0:
+        return 0
     p = [url.count(c)/len(url) for c in set(url)]
     return -sum(x*math.log2(x) for x in p)
 
@@ -102,7 +108,7 @@ def extract(url):
     ]
 
 
-print("⚡ Fast preprocessing...")
+print("⚡ Preprocessing...")
 
 features = data["url"].apply(extract)
 
@@ -117,4 +123,4 @@ X["label"] = data["label"]
 
 X.to_csv("processed_dataset.csv", index=False)
 
-print("✅ Preprocessing complete!")
+print(f"✅ Preprocessing complete! Saved {len(X)} rows to processed_dataset.csv")

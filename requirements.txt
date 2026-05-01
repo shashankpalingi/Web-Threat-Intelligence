@@ -1,0 +1,12 @@
+# ML Pipeline
+pandas
+numpy
+scikit-learn
+xgboost
+shap
+matplotlib
+tldextract
+
+# Backend API
+fastapi
+uvicorn[standard]
