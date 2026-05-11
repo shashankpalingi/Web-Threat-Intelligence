@@ -52,7 +52,7 @@ def init_db():
 
 
 def log_scan(url, domain, threat_score, threat_label, prediction,
-             confidence, features=None, explanation=None):
+             confidence, features=None, explanation=None, scan_type="url_scan"):
     """Log a scan result to the database."""
     conn = get_connection()
     cursor = conn.cursor()
@@ -60,8 +60,8 @@ def log_scan(url, domain, threat_score, threat_label, prediction,
     cursor.execute("""
         INSERT INTO scan_logs
         (url, domain, threat_score, threat_label, prediction,
-         confidence, features_json, explanation_json)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+         confidence, features_json, explanation_json, scan_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         url,
         domain,
@@ -70,7 +70,8 @@ def log_scan(url, domain, threat_score, threat_label, prediction,
         prediction,
         confidence,
         json.dumps(features) if features else None,
-        json.dumps(explanation) if explanation else None
+        json.dumps(explanation) if explanation else None,
+        scan_type
     ))
 
     conn.commit()

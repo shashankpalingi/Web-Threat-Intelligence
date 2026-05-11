@@ -10,3 +10,4 @@ tldextract
 # Backend API
 fastapi
 uvicorn[standard]
+
